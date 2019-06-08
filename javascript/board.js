@@ -2,9 +2,8 @@
 class Board {
 
   constructor(width, height, callback){
-    state = [];
-    match = 4;
-    callback;
+    this.state = [];
+    this.match = 4;
 
     for( let l = height, row; l--; ){
       row = [];
