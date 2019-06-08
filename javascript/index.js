@@ -29,23 +29,16 @@ setResizeHandler(resizeCanvas, 100)
 resizeCanvas()
 
 const keys = {}
-
 window.addEventListener('keydown', (e) => {
   keys[e.keyCode] = 2
-  console.log(e.keyCode)
-  console.log(keys)
   e.preventDefault()
 })
-
 window.addEventListener('keyup', (e) => {
   keys[e.keyCode] = 0
-  console.log(keys)
 })
-
 const getKey = (code) => {
   return keys[code] != 0
 }
-
 const getKeyDown = (code) => {
   const r = keys[code]
   if (r == 2) {
