@@ -55,4 +55,3 @@ const tick = (now) => {
 }
 prev = performance.now()
 window.requestAnimationFrame(tick);
->>>>>>> 03ce0bc9adafd51309b554ad5bbbbb80bfd49398
