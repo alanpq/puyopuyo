@@ -1,22 +1,22 @@
 
 class Board {
 
-  state = [];
-
-  callback;
-
   constructor(width, height, callback){
-      for( let l = height, row; l--; ){
-        row = [];
-        for( let k = width; k--; ){
-          row.push(0)
-        }
-        this.state.push(row)
-      }
+    state = [];
+    match = 4;
+    callback;
 
-      this.width = width;
-      this.height = height;
-      this.callback = callback;
+    for( let l = height, row; l--; ){
+      row = [];
+      for( let k = width; k--; ){
+        row.push(0)
+      }
+      this.state.push(row)
+    }
+
+    this.width = width;
+    this.height = height;
+    this.callback = callback;
   }
 
   EmitUpdate(){
@@ -58,7 +58,8 @@ class Board {
 
     //place second block
     this.PlaceBlock(x,y,color2)
-    this.EmitUpdate();
+    this.SettleBoard()
+    this.EmitUpdate()
   }
 
   SettleBoard(){
@@ -78,6 +79,30 @@ class Board {
     this.EmitUpdate();
     if(changes)
       this.SettleBoard();
+
+  }
+
+  DestroyGroups(){
+    //interate up the board
+    for(let y = this.height, x; y--; ){
+      for( x = this.width; x--; ){
+        //if current block is not empty and the one below it is, move it down
+        this.CheckSurroundingCells([{
+          x:x,
+          y:y,
+          color:this.state[y][x]
+        }])
+        if( y < this.height-1 && this.state[y][x] > 0 && this.state[y+1][x] == 0 ){
+            this.state[y+1][x] = this.state[y][x]
+            this.state[y][x] = 0
+            changes = true
+        }
+      }
+    }
+  }
+
+  //recursive function checks surrounding cells and adds any of the same color to an array
+  CheckSurroundingCells(cells){
 
   }
 
