@@ -90,7 +90,8 @@ class Board {
         this.CheckSurroundingCells([{
           x:x,
           y:y,
-          color:this.state[y][x]
+          color:this.state[y][x],
+          checked:false
         }])
         if( y < this.height-1 && this.state[y][x] > 0 && this.state[y+1][x] == 0 ){
             this.state[y+1][x] = this.state[y][x]
