@@ -2,7 +2,7 @@
     arrays representing the segments of a block, containing an x, y and color value:
         return [ [x, y, color], [...], ... ]
 */
-export const blocks = {
+const blocks = {
 
     basic: (colors, rot) => {
         /* Rotation defines a step counter-clockwise from the bottom of the basic block
