@@ -1,13 +1,14 @@
 class Chain {
-  chain_power_table = [4,	13,	25,	32,	47,	91,	150,	221,	290,	356,	438,	516,	581,	652,	720,	785,	847,	888,	999]
-  chain_power_index = 0
-  current_colors = {}
 
   constructor(fever){
-      this.puyos_cleared = 0
-      this.chain_power = 0
-      this.color_bonus = 0
-      this.group_bonus = 0
+    this.chain_power_table = [4,	13,	25,	32,	47,	91,	150,	221,	290,	356,	438,	516,	581,	652,	720,	785,	847,	888,	999]
+    this.chain_power_index = 0
+    this.current_colors = {}
+
+    this.puyos_cleared = 0
+    this.chain_power = 0
+    this.color_bonus = 0
+    this.group_bonus = 0
   }
 
   Calculate(){
