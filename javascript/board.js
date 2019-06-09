@@ -59,9 +59,9 @@ class Board {
     }
 
     this.EmitUpdate();
-    if(changes)
-      this.SettleBoard();
-
+    //if(changes)
+      //this.SettleBoard();
+    return changes;
   }
 
   DestroyGroups(){
