@@ -34,7 +34,7 @@ class Board {
   }
 
   PlaceShape(x,y,blocks){
-    for( let l = blocks.length, x, y, color; --l; ){
+    for( let l = blocks.length, block_x, block_y, color; --l; ){
       block_x = blocks[l][0];
       block_y = blocks[l][1];
       color = blocks[l][2];
@@ -150,9 +150,9 @@ class Board {
 
 }
 
-// let board = new Board(10,20,function(board){
-//   console.log(board.PrintAsString());
-// });
+let board = new Board(10,20,function(board){
+  console.log(board.PrintAsString());
+});
 
 for( let i = 0; i < 4; i++){
 
