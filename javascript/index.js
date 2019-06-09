@@ -178,12 +178,18 @@ const tick = (now) => {
       // ACTIVE BLOCK ROTATION
       if(getKeyDown(81)) {
         activeBlock.rot = (activeBlock.rot + 1) % 4
+
+        //test if rotation possible
+
         activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
       } else if (getKeyDown(69)) {
         activeBlock.rot = (activeBlock.rot - 1) % 4
         if (activeBlock.rot < 0) {
           activeBlock.rot += 4
         }
+
+        //test if rotation possible
+        
         activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
       }
 
