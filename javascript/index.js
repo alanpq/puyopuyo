@@ -39,7 +39,7 @@ window.addEventListener('keydown', (e) => {
       // console.log("phew", keys[e.keyCode])
       keys[e.keyCode] = 2
       // console.log(keys[e.keyCode])
-    }, 500)
+    }, 100)
   }
   e.preventDefault()
 })
@@ -57,7 +57,7 @@ const getKeyHeld = (code) => {
   return k == 2
 }
 const getKey = (code) => {
-  return keys[code] != 0
+  return keys[code] != undefined
 }
 const getKeyDown = (code) => {
   let k = keys[code]
@@ -116,8 +116,12 @@ const draw = (dt) => {
 const data = {x:0, y:0, r:1}
 
 var discreteTimer = 0;
+var discreteTimer2 = 0;
+
 var blockFallingDelay = 0.5;
 var realBlockFallingDelay = 0.5;
+
+var blockMovementDelay = 0.05;
 
 const tick = (now) => {
   window.requestAnimationFrame(tick)
@@ -141,21 +145,25 @@ const tick = (now) => {
     case state.DEFAULT:
       // TIMED BLOCK FALLING (aka gravity)
       discreteTimer += dt;
-      if (discreteTimer > realBlockFallingDelay) { //TODO: change this value with a configurable one, based on difficulty
+      discreteTimer2 += dt;
+      if (discreteTimer > realBlockFallingDelay) {
         discreteTimer = 0;
         activeBlock.y += 1
       }
 
       // ACTIVE BLOCK MOVEMENT
-      if (getKeyHeld(65)) {
-        activeBlock.x -= 1
-      } else if (getKeyHeld(68)) {
-        activeBlock.x += 1
+      if(discreteTimer2 > blockMovementDelay) {
+        discreteTimer2 = 0;
+        if (getKeyHeld(65)) {
+          activeBlock.x -= 1
+        } else if (getKeyHeld(68)) {
+          activeBlock.x += 1
+        }
       }
       if (getKey(83)) {
-        activeBlock.y += 1
+        realBlockFallingDelay = blockFallingDelay * 0.1
       } else {
-
+        realBlockFallingDelay = blockFallingDelay
       }
       //else if (getKeyDown(87)) {
       //   activeBlock.y -= 1
@@ -174,8 +182,8 @@ const tick = (now) => {
       }
       
       // MISC KEYS
-      if(getKeyDown(32)) { //SPACEBAR - Place shape
-        testBoard.PlaceShape(activeBlock.x, activeBlock.y, activeBlock.positions)
+      if(getKeyDown(32)) { //SPACEBAR - Place block
+        testBoard.PlaceBlock(activeBlock.x, activeBlock.y, activeBlock.positions)
       }
       if(getKeyDown(71)) { //G - Destroy Groups
         testBoard.DestroyGroups()
