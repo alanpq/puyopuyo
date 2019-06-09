@@ -28,20 +28,41 @@ setResizeHandler(resizeCanvas, 100)
 resizeCanvas()
 
 const keys = {}
+const keyHandlers = {}
 window.addEventListener('keydown', (e) => {
-  keys[e.keyCode] = 2
+  if(keys[e.keyCode] >= 3) return;
+  // console.log("down boy", keys[e.keyCode], performance.now())
+  if(keyHandlers[e.keyCode] == undefined) {
+    keys[e.keyCode] = 4
+    // console.log("yeesh", keys[e.keyCode], performance.now())
+    keyHandlers[e.keyCode] = setTimeout(() => {
+      // console.log("phew", keys[e.keyCode])
+      keys[e.keyCode] = 2
+      // console.log(keys[e.keyCode])
+    }, 100)
+  }
   e.preventDefault()
 })
 window.addEventListener('keyup', (e) => {
-  keys[e.keyCode] = 0
+  if(keyHandlers[e.keyCode]) {clearTimeout(keyHandlers[e.keyCode]); delete keyHandlers[e.keyCode]}
+  delete keys[e.keyCode]
+  console.log(e.key)
 })
+const getKeyHeld = (code) => {
+  let k = keys[code]
+  if (k == 4) {
+    keys[code] = 3
+    return true
+  }
+  return k == 2
+}
 const getKey = (code) => {
-  return keys[code] != 0
+  return keys[code] != undefined
 }
 const getKeyDown = (code) => {
-  const r = keys[code]
-  if (r == 2) {
-    keys[code] = 1
+  let k = keys[code]
+  if (k == 4) {
+    keys[code] = 3
     return true
   }
   return false
@@ -67,13 +88,14 @@ var prev
 const draw = (dt) => {
   ctx.clearRect(0,0,canvas.width, canvas.height)
 
-  // ACTIVE BLOCK DRAWING & COLLISION DETECTION (this is where the fun begins)
+  // ACTIVE BLOCK DRAWING
   for(let i = 0; i < activeBlock.positions.length; i++) {
-    let block = activeBlock.positions[i];
+    let block = activeBlock.positions[i]
     let x = activeBlock.x + block[0]
     let y = activeBlock.y + block[1]
+
     ctx.fillStyle = colors[block[2]]
-    ctx.fillRect(30+x*30, 30+y*30, 30, 30);
+    ctx.fillRect(30+x*30, 30+y*30, 30, 30)
   }
 
   // BOARD DRAWING
@@ -86,13 +108,20 @@ const draw = (dt) => {
     }
   }
 
-  ctx.fillStyle = "black";
+  ctx.fillStyle = "black"
   ctx.fillText(dt*1000, 10, 10)
+  ctx.fillText(JSON.stringify(keys), 500, 10)
 }
 
 const data = {x:0, y:0, r:1}
 
 var discreteTimer = 0;
+var discreteTimer2 = 0;
+
+var blockFallingDelay = 0.5;
+var realBlockFallingDelay = 0.5;
+
+var blockMovementDelay = 0.05;
 
 const tick = (now) => {
   window.requestAnimationFrame(tick)
@@ -116,23 +145,30 @@ const tick = (now) => {
     case state.DEFAULT:
       // TIMED BLOCK FALLING (aka gravity)
       discreteTimer += dt;
-      if (discreteTimer > 0.5) { //TODO: change this value with a configurable one, based on difficulty
+      discreteTimer2 += dt;
+      if (discreteTimer > realBlockFallingDelay) {
         discreteTimer = 0;
         activeBlock.y += 1
       }
 
       // ACTIVE BLOCK MOVEMENT
-      if (getKeyDown(65)) {
-        activeBlock.x -= 1
-      } else if (getKeyDown(68)) {
-        activeBlock.x += 1
+      if(discreteTimer2 > blockMovementDelay) {
+        discreteTimer2 = 0;
+        if (getKeyHeld(65)) {
+          activeBlock.x -= 1
+        } else if (getKeyHeld(68)) {
+          activeBlock.x += 1
+        }
       }
-      // } else if (getKeyDown(87)) {
+      if (getKey(83)) {
+        realBlockFallingDelay = blockFallingDelay * 0.1
+      } else {
+        realBlockFallingDelay = blockFallingDelay
+      }
+      //else if (getKeyDown(87)) {
       //   activeBlock.y -= 1
-      // } else if (getKeyDown(83)) {
-      //   activeBlock.y += 1
       // }
-      
+      let oldRot = activeBlock.rot;
       // ACTIVE BLOCK ROTATION
       if(getKeyDown(81)) {
         activeBlock.rot = (activeBlock.rot + 1) % 4
@@ -146,8 +182,8 @@ const tick = (now) => {
       }
       
       // MISC KEYS
-      if(getKeyDown(32)) { //SPACEBAR - Place shape
-        testBoard.PlaceShape(activeBlock.x, activeBlock.y, activeBlock.positions)
+      if(getKeyDown(32)) { //SPACEBAR - Place block
+        testBoard.PlaceBlock(activeBlock.x, activeBlock.y, activeBlock.positions)
       }
       if(getKeyDown(71)) { //G - Destroy Groups
         testBoard.DestroyGroups()
@@ -157,8 +193,15 @@ const tick = (now) => {
       }
 
       // COLLISION DETECTION
-      // TODO: figure out if there's a better way besides merging with the draw
-      // loop, to avoid doubling up
+      for(let i = 0; i < activeBlock.positions.length; i++) {
+        let block = activeBlock.positions[i]
+        let x = activeBlock.x + block[0]
+        let y = activeBlock.y + block[1]
+    
+        if(x<0)                 activeBlock.x += 1;
+        if(x>=testBoard.width)  activeBlock.x -= 1;
+        if(y>=testBoard.height) activeBlock.y -= 1;
+      }
     break;
     default:
 
