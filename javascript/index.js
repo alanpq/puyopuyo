@@ -4,6 +4,7 @@ const w = window,
     g = d.body
 
 var canvas = document.getElementById("canvas")
+var score = document.getElementById("score")
 var ctx = canvas.getContext("2d")
 
 const setResizeHandler = (callback, timeout) => {
@@ -180,7 +181,7 @@ const tick = (now) => {
         }
         activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
       }
-      
+
       // MISC KEYS
       if(getKeyDown(32)) { //SPACEBAR - Place block
         testBoard.PlaceBlock(activeBlock.x, activeBlock.y, activeBlock.positions)
@@ -197,7 +198,7 @@ const tick = (now) => {
         let block = activeBlock.positions[i]
         let x = activeBlock.x + block[0]
         let y = activeBlock.y + block[1]
-    
+
         if(x<0)                 activeBlock.x += 1;
         if(x>=testBoard.width)  activeBlock.x -= 1;
         if(y>=testBoard.height) activeBlock.y -= 1;
@@ -208,7 +209,7 @@ const tick = (now) => {
     break;
   }
 
-  
+
 
   // data.r = (data.r + (dt * 10)) % (Math.PI*2)
   // data.x = Math.sin(data.r) * 30 + 60
@@ -218,7 +219,7 @@ const tick = (now) => {
 }
 
 var testBoard = new Board(10,20,function(board){
-  
+
 });
 testBoard.PlaceBlock(2,10,blocks.basic([2,3], activeBlock.rot));
 
@@ -230,4 +231,3 @@ testBoard.PlaceBlock(2,10,blocks.basic([2,3], activeBlock.rot));
 
 prev = performance.now()
 window.requestAnimationFrame(tick)
-
