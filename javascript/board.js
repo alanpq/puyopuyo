@@ -154,12 +154,6 @@ class Board {
 //   console.log(board.PrintAsString());
 // });
 
-<<<<<<< HEAD
-// for( let i = 0; i < 4; i++){
-//   board.PlaceBasicShape(4,4,i,4,i+1);
-// }
-// board.SettleBoard()
-=======
 for( let i = 0; i < 4; i++){
 
   //board.PlaceShape(4,4,blocks.basic([9,i+1],i));
@@ -177,4 +171,3 @@ let test = "\
 board.SetBoardState(test.split(","))
 board.SettleBoard()
 board.DestroyGroups()
->>>>>>> 2a2f2edda4506c9fa6d01d9fd0a308d46ef3cf85
