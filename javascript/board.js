@@ -34,7 +34,7 @@ class Board {
   }
 
   PlaceShape(x,y,blocks){
-    for( let l = blocks.length, block_x, block_y, color; --l; ){
+    for( let l = blocks.length, block_x, block_y, color; l--; ){
       block_x = blocks[l][0];
       block_y = blocks[l][1];
       color = blocks[l][2];
@@ -59,7 +59,7 @@ class Board {
     }
 
     if(changes){
-      this.EmitUpdate();
+      this.EmitUpdate()
     }
     //if(changes)
       //this.SettleBoard();
@@ -67,18 +67,20 @@ class Board {
   }
 
   DestroyGroups(){
-    //interate up the board
     let changes = false;
+    //interate up the board
     for(let y = this.height, x, block_group; y--; ){
       for( x = this.width; x--; ){
-        //if current block is not empty and the one below it is, move it down
+
+        //if cell has a block, i.e. is greater than 0
         if( this.state[y][x] > 0 ){
+          //get surrounding cells that match in color
           block_group = this.CheckSurroundingCells(this.state[y][x],[x+","+y],[]);
 
-          console.log(block_group)
-
+          //if group of matching blocks is larger than or equal to match property
           if(block_group.length >= this.match){
             changes = true;
+            //set all those blocks to 0
             for( let i = 0, l = block_group.length, pos, x, y; i < l; i++ ){
               pos = block_group[i].split(",")
               x = parseInt(pos[0])
@@ -89,8 +91,9 @@ class Board {
         }
       }
     }
-    if( changes )
-      this.EmitUpdate();
+    if( changes ){
+      this.EmitUpdate()
+    }
   }
 
   //recursive function checks surrounding cells and adds any of the same color to an array
@@ -150,9 +153,8 @@ class Board {
     }
     this.EmitUpdate()
   }
-
 }
-
+/*
 let board = new Board(10,20,function(board){
   console.log(board.PrintAsString());
 });
@@ -173,4 +175,4 @@ let test = "\
 
 board.SetBoardState(test.split(","))
 board.SettleBoard()
-board.DestroyGroups()
+board.DestroyGroups()*/
