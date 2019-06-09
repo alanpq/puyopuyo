@@ -33,7 +33,7 @@ const blocks = {
     
 }
 
-const getRotTest = {
+const rotTests = {
   basic: (oldRot, newRot=oldRot) => {
     const tests = [
       [ [0, 0], [0, 1] ],         // Rotation 0, index 0
