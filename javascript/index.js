@@ -99,6 +99,8 @@ const activeBlock = {
     //test if rotation possible
     let result = testBoard.TestRotationOffsetArray(this.x,this.y,this.positions,tests)
 
+    console.log(result);
+
     if(result){
       this.x += result[0]
       this.y += result[1]
@@ -106,7 +108,8 @@ const activeBlock = {
       this.positions = blocks.basic(this.colors,this.rot)
     }
     else {
-      this.RotateBy(rot*2)
+      console.log(rot*2);
+      //this.RotateBy(rot*2)
     }
   }
 }

@@ -131,6 +131,11 @@ class Board {
       }
     }
     return false
+
+    // for (let i=0; i<offsetArray.length; i++) {
+    //   offsetX = offsetArray[i][0]
+    //   offsetY = offsetArray[i][1]
+    // }
   }
 
 

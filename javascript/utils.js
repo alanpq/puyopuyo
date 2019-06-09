@@ -36,10 +36,10 @@ const blocks = {
 const rotTests = {
   basic: (newRot, oldRot=newRot) => {
     const tests = [
-      [ [0, 0], [0, 1] ],         // Rotation 0, index 0
-      [ [0, 0], [1, 0], [0, 1] ], // Rotation 1, index 1
-      [ [0, 0] ],                 // Rotation 2, index 2
-      [ [0, 0], [-1, 0], [0, 1] ] // Rotation 3, index 3
+      [ [0, 0] ],                  // Rotation 0, index 0
+      [ [0, 0], [1, 0], [0, -1] ], // Rotation 1, index 1
+      [ [0, 0], [0, -1] ],         // Rotation 2, index 2
+      [ [0, 0], [-1, 0], [0, -1] ] // Rotation 3, index 3
     ]
 
     return tests[newRot];         // Returned to the board
