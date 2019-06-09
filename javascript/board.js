@@ -1,9 +1,68 @@
+class Chain {
+  chain_power_table = [4,	13,	25,	32,	47,	91,	150,	221,	290,	356,	438,	516,	581,	652,	720,	785,	847,	888,	999]
+  chain_power_index = 0
+  current_colors = {}
+
+  constructor(fever){
+      this.puyos_cleared = 0
+      this.chain_power = 0
+      this.color_bonus = 0
+      this.group_bonus = 0
+  }
+
+  Calculate(){
+    return ( this.puyos_cleared * 10 ) * Math.max(Math.min( this.chain_power + this.color_bonus + this.group_bonus, 999),1)
+  }
+
+  IncrementChain(){
+    if(this.chain_power_index < this.chain_power_table.length-1){
+      this.chain_power_index++
+      this.chain_power = this.chain_power_table[ this.chain_power_index ]
+    }
+  }
+
+  AddColor(color){
+    this.current_colors[color] = true
+    let bonus_index = Object.keys(this.current_colors).length
+    if( bonus_index < 2 ){
+      this.color_bonus = 0
+    } else {
+      this.color_bonus = 3*Math.pow(2,bonus_index)
+    }
+  }
+
+  AddGroup(size){
+    this.puyos_cleared += size;
+
+    if( size < 5 ){
+      this.group_bonus += 0
+    } else if( size > 10 ){
+      this.group_bonus += 10
+    } else {
+      this.group_bonus += size-3
+    }
+  }
+}
+
+/*
+  Score = (10 * PC) * (CP + CB + GB)
+
+  PC = Number of puyo cleared in the chain.
+  CP = Chain Power (These values are listed in the Chain Power Table.)
+  CB = Color Bonus
+  GB = Group Bonus
+  The value of (CP + CB + GB) is limited to between 1 and 999 inclusive.*/
+
+
 class Board {
 
   constructor(width, height, callback){
     this.state = state.SETTLING
     this.map = []
     this.match = 4
+
+    this.score = 0;
+    this.current_chain = new Chain();
 
     for( let l = height, row; l--; ){
       row = [];
@@ -79,7 +138,16 @@ class Board {
 
           //if group of matching blocks is larger than or equal to match property
           if(block_group.length >= this.match){
-            changes = true;
+            if(!changes){
+              changes = true;
+              this.current_chain.IncrementChainPower();
+            }
+
+            this.current_chain.AddColor(this.map[y][x]);
+
+            this.current_chain.AddGroup(block_group.length);
+
+
             //set all those blocks to 0
             for( let i = 0, l = block_group.length, pos, x, y; i < l; i++ ){
               pos = block_group[i].split(",")
@@ -93,6 +161,11 @@ class Board {
     }
     if( changes )
       this.EmitUpdate();
+    else {
+      this.score += this.current_chain.Calculate()
+      this.current_chain = new Chain();
+    }
+
     return changes
   }
 
