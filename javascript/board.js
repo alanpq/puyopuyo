@@ -33,11 +33,11 @@ class Board {
     this.state[y][x] = color;
   }
 
-  PlaceShape(x,y,blocks){
-    for( let l = blocks.length, block_x, block_y, color; l--; ){
-      block_x = blocks[l][0];
-      block_y = blocks[l][1];
-      color = blocks[l][2];
+  PlaceBlock(x,y,cells){
+    for( let l = cells.length, block_x, block_y, color; --l; ){
+      block_x = cells[l][0];
+      block_y = cells[l][1];
+      color = cells[l][2];
       this.SetCell(x+block_x,y+block_y,color);
     }
     this.SettleBoard()
@@ -49,7 +49,7 @@ class Board {
     //interate up the board
     for(let y = this.height, x; y--; ){
       for( x = this.width; x--; ){
-        //if current block is not empty and the one below it is, move it down
+        //if current cell is not empty and the one below it is, move it down
         if( y < this.height-1 && this.state[y][x] > 0 && this.state[y+1][x] == 0 ){
             this.state[y+1][x] = this.state[y][x]
             this.state[y][x] = 0
@@ -105,7 +105,7 @@ class Board {
       x = parseInt(pos[0])
       y = parseInt(pos[1])
 
-      //check surrounding blocks so long as they aren't out of bounds or previously checked
+      //check surrounding cells so long as they aren't out of bounds or previously checked
       if( x < this.width-1
         && !checked_cells.includes( (x+1)+","+y )
         && !cellsToCheck.includes( (x+1)+","+y )
@@ -161,7 +161,7 @@ let board = new Board(10,20,function(board){
 
 for( let i = 0; i < 4; i++){
 
-  //board.PlaceShape(4,4,blocks.basic([9,i+1],i));
+  //board.PlaceBlock(4,4,blocks.basic([9,i+1],i));
 }
 
 let test = "\
