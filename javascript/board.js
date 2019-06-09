@@ -3,6 +3,8 @@ class Board {
   constructor(width, height, callback){
     this.state = [];
     this.match = 4;
+    
+
 
     for( let l = height, row; l--; ){
       row = [];
