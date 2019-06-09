@@ -4,7 +4,6 @@ const w = window,
     g = d.body
 
 var canvas = document.getElementById("canvas")
-var score = document.getElementById("score")
 var ctx = canvas.getContext("2d")
 
 const setResizeHandler = (callback, timeout) => {
@@ -138,7 +137,13 @@ const tick = (now) => {
         if (!testBoard.SettleBoard()) {   // if settling the board does not result in a change, board is done settling
           if(!testBoard.DestroyGroups()) {          // and if after board is settled no groups are destroyed
             testBoard.state = state.DEFAULT  // return to normal play
+          } else {
+            //TODO print current score
+            //testBoard.score
           }
+        } else {
+          //TODO print current chain multiplier
+          //testBoard.current_chain.chain_power
         }
       }
     break;
