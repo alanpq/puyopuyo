@@ -34,29 +34,13 @@ class Board {
     this.state[y][x] = color;
   }
 
-  PlaceBasicShape(x,y,orientation,color1,color2){
-    //x is an int with possible values: 0 to board.width
-    //y is an int with possible values: 0 to board.height
-    //orientation 0, 1, 2, 3
-    //color1/color2
-
-    //place first block
-    this.PlaceBlock(x,y,color1)
-
-    //figure out where second block should go
-    orientation-=1
-    //orientation -1 0 1 2
-    if( orientation == -1 || orientation == 1 ){
-      y += orientation;
+  PlaceShape(blocks){
+    for( let l = blocks.length, x, y, color; --l; ){
+      x = blocks[l][0];
+      y = blocks[l][1];
+      color = blocks[l][2];
+      this.PlaceBlock(x,y,color);
     }
-    orientation-=1
-    //orientation -2 -1 0 1
-    if( orientation == -1 || orientation == 1 ){
-      x += orientation;
-    }
-
-    //place second block
-    this.PlaceBlock(x,y,color2)
     this.SettleBoard()
     this.EmitUpdate()
   }
@@ -86,11 +70,8 @@ class Board {
     for(let y = this.height, x; y--; ){
       for( x = this.width; x--; ){
         //if current block is not empty and the one below it is, move it down
-        this.CheckSurroundingCells([{
-          x:x,
-          y:y,
-          color:this.state[y][x]
-        }])
+        this.CheckSurroundingCells(this.state[y][x],[x+","+y],[]);
+
         if( y < this.height-1 && this.state[y][x] > 0 && this.state[y+1][x] == 0 ){
             this.state[y+1][x] = this.state[y][x]
             this.state[y][x] = 0
@@ -101,8 +82,19 @@ class Board {
   }
 
   //recursive function checks surrounding cells and adds any of the same color to an array
-  CheckSurroundingCells(cells){
+  CheckSurroundingCells(color,cells,checked_cells){
+    let cellsToCheck = [];
 
+    for( let i = 0, l = cells.length, pos; i < l; i++ ){
+      pos = cells[i].split(",")
+
+      if( pos[0] < this.width-1 && !checked_cells.includes( (pos[0]+1)+","+pos[1]) ){
+
+      }
+
+
+
+    }
   }
 
 }
