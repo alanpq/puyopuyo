@@ -59,7 +59,8 @@ const colors = [
 const activeBlock = {
   x:0,
   y:0,
-  rot:0
+  rot:0,
+  positions: blocks.basic([1,2], 0)
 }
 
 var prev
@@ -71,11 +72,9 @@ const draw = (dt) => {
   // } else if (getKey(32)) {
   //   ctx.fillStyle = "orange"
   // }
-
-  let activeBlockPositions = blocks.basic([1,2], activeBlock.rot);
   // console.log(activeBlockPositions)
-  for(let i = 0; i < activeBlockPositions.length; i++) { 
-    let block = activeBlockPositions[i];
+  for(let i = 0; i < activeBlock.positions.length; i++) { 
+    let block = activeBlock.positions[i];
     ctx.fillStyle = colors[block[2]]
     // console.log((30+block[0]+activeBlock.x)*10, (30+block[1]+activeBlock.y)*10)
     ctx.fillRect(30+(block[0]+activeBlock.x)*30, 30+(block[1]+activeBlock.y)*30, 30, 30);
@@ -105,6 +104,8 @@ const tick = (now) => {
   const dt = (now - prev)/1000 // change in seconds
   prev = now
 
+  
+
   if (getKeyDown(65)) {
     activeBlock.x -= 1
   } else if (getKeyDown(68)) {
@@ -117,15 +118,17 @@ const tick = (now) => {
 
   if(getKeyDown(81)) {
     activeBlock.rot = (activeBlock.rot + 1) % 4
+    activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
   } else if (getKeyDown(69)) {
     activeBlock.rot = (activeBlock.rot - 1) % 4
     if (activeBlock.rot < 0) {
       activeBlock.rot += 4
     }
+    activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
   }
 
   if(getKeyDown(31)) {
-    
+
   }
 
   // data.r = (data.r + (dt * 10)) % (Math.PI*2)
