@@ -177,7 +177,7 @@ const tick = (now) => {
 var testBoard = new Board(10,20,function(board){
   
 });
-testBoard.PlaceShape(2,10,blocks.basic([2,3], activeBlock.rot));
+testBoard.PlaceBlock(2,10,blocks.basic([2,3], activeBlock.rot));
 
 // for( let i = 0; i < 4; i++){
 //   testBoard.PlaceBasicShape(4,4,i,4,i+1);
