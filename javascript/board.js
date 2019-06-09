@@ -29,7 +29,7 @@ class Board {
     return str;
   }
 
-  PlaceBlock(x,y,color){
+  SetCell(x,y,color){
     this.state[y][x] = color;
   }
 
@@ -38,7 +38,7 @@ class Board {
       block_x = blocks[l][0];
       block_y = blocks[l][1];
       color = blocks[l][2];
-      this.PlaceBlock(x+block_x,y+block_y,color);
+      this.SetCell(x+block_x,y+block_y,color);
     }
     this.SettleBoard()
     this.EmitUpdate()
