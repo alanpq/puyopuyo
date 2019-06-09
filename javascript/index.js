@@ -67,36 +67,32 @@ var prev
 const draw = (dt) => {
   ctx.clearRect(0,0,canvas.width, canvas.height)
 
-  // if (getKeyDown(32)) {
-  //   ctx.fillStyle = "red"
-  // } else if (getKey(32)) {
-  //   ctx.fillStyle = "orange"
-  // }
-  // console.log(activeBlockPositions)
-  for(let i = 0; i < activeBlock.positions.length; i++) { 
+  // ACTIVE BLOCK DRAWING & COLLISION DETECTION (this is where the fun begins)
+  for(let i = 0; i < activeBlock.positions.length; i++) {
     let block = activeBlock.positions[i];
+    let x = activeBlock.x + block[0]
+    let y = activeBlock.y + block[1]
     ctx.fillStyle = colors[block[2]]
-    // console.log((30+block[0]+activeBlock.x)*10, (30+block[1]+activeBlock.y)*10)
-    ctx.fillRect(30+(block[0]+activeBlock.x)*30, 30+(block[1]+activeBlock.y)*30, 30, 30);
+    ctx.fillRect(30+x*30, 30+y*30, 30, 30);
   }
 
+  // BOARD DRAWING
   for(let y = 0; y < testBoard.height; y++) {
     for(let x = 0; x < testBoard.width; x++) {
-      ctx.fillStyle = colors[testBoard.state[y][x]]
+      ctx.fillStyle = colors[testBoard.map[y][x]]
       ctx.fillRect(30 + (x * 30), 30 + (y * 30), 30, 30)
       ctx.strokeStyle = "1px solid black"
       ctx.strokeRect(30 + (x * 30), 30 + (y * 30), 30, 30)
     }
   }
 
-  
-
-  // ctx.fillRect(data.x, data.y, 10, 10)
   ctx.fillStyle = "black";
   ctx.fillText(dt*1000, 10, 10)
 }
 
 const data = {x:0, y:0, r:1}
+
+var discreteTimer = 0;
 
 const tick = (now) => {
   window.requestAnimationFrame(tick)
@@ -104,32 +100,72 @@ const tick = (now) => {
   const dt = (now - prev)/1000 // change in seconds
   prev = now
 
+  switch(testBoard.state) {
+    case state.SETTLING:
+      discreteTimer += dt;
+      if (discreteTimer > 0.05) {
+        discreteTimer = 0
+        if (!testBoard.SettleBoard()) {   // if settling the board does not result in a change, board is done settling
+          if(!testBoard.DestroyGroups()) {          // and if after board is settled no groups are destroyed
+            testBoard.state = state.DEFAULT  // return to normal play
+          }
+        }
+      }
+    break;
+
+    case state.DEFAULT:
+      // TIMED BLOCK FALLING (aka gravity)
+      discreteTimer += dt;
+      if (discreteTimer > 0.5) { //TODO: change this value with a configurable one, based on difficulty
+        discreteTimer = 0;
+        activeBlock.y += 1
+      }
+
+      // ACTIVE BLOCK MOVEMENT
+      if (getKeyDown(65)) {
+        activeBlock.x -= 1
+      } else if (getKeyDown(68)) {
+        activeBlock.x += 1
+      }
+      // } else if (getKeyDown(87)) {
+      //   activeBlock.y -= 1
+      // } else if (getKeyDown(83)) {
+      //   activeBlock.y += 1
+      // }
+      
+      // ACTIVE BLOCK ROTATION
+      if(getKeyDown(81)) {
+        activeBlock.rot = (activeBlock.rot + 1) % 4
+        activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
+      } else if (getKeyDown(69)) {
+        activeBlock.rot = (activeBlock.rot - 1) % 4
+        if (activeBlock.rot < 0) {
+          activeBlock.rot += 4
+        }
+        activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
+      }
+      
+      // MISC KEYS
+      if(getKeyDown(32)) { //SPACEBAR - Place shape
+        testBoard.PlaceShape(activeBlock.x, activeBlock.y, activeBlock.positions)
+      }
+      if(getKeyDown(71)) { //G - Destroy Groups
+        testBoard.DestroyGroups()
+      }
+      if(getKeyDown(78)) { //N - Force Settle Board
+        testBoard.SettleBoard()
+      }
+
+      // COLLISION DETECTION
+      // TODO: figure out if there's a better way besides merging with the draw
+      // loop, to avoid doubling up
+    break;
+    default:
+
+    break;
+  }
+
   
-
-  if (getKeyDown(65)) {
-    activeBlock.x -= 1
-  } else if (getKeyDown(68)) {
-    activeBlock.x += 1
-  } else if (getKeyDown(87)) {
-    activeBlock.y -= 1
-  } else if (getKeyDown(83)) {
-    activeBlock.y += 1
-  }
-
-  if(getKeyDown(81)) {
-    activeBlock.rot = (activeBlock.rot + 1) % 4
-    activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
-  } else if (getKeyDown(69)) {
-    activeBlock.rot = (activeBlock.rot - 1) % 4
-    if (activeBlock.rot < 0) {
-      activeBlock.rot += 4
-    }
-    activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
-  }
-
-  if(getKeyDown(31)) {
-
-  }
 
   // data.r = (data.r + (dt * 10)) % (Math.PI*2)
   // data.x = Math.sin(data.r) * 30 + 60

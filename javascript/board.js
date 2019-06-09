@@ -1,15 +1,16 @@
 class Board {
 
   constructor(width, height, callback){
-    this.state = [];
-    this.match = 4;
+    this.state = state.SETTLING
+    this.map = []
+    this.match = 4
 
     for( let l = height, row; l--; ){
       row = [];
       for( let k = width; k--; ){
         row.push(0)
       }
-      this.state.push(row)
+      this.map.push(row)
     }
 
     this.width = width;
@@ -23,21 +24,22 @@ class Board {
 
   PrintAsString(){
     let str = "";
-    for( let h = this.state.length; h--; ){
-      str = this.state[h].join(" ")+"\n"+str;
+    for( let h = this.map.length; h--; ){
+      str = this.map[h].join(" ")+"\n"+str;
     }
     return str;
   }
 
   SetCell(x,y,color){
-    this.state[y][x] = color;
+    this.map[y][x] = color;
   }
 
   PlaceShape(x,y,blocks){
-    for( let l = blocks.length, block_x, block_y, color; --l; ){
+    for( let l = blocks.length, block_x, block_y, color; l--; ){
       block_x = blocks[l][0];
       block_y = blocks[l][1];
       color = blocks[l][2];
+      console.log(l)
       this.SetCell(x+block_x,y+block_y,color);
     }
     this.SettleBoard()
@@ -50,9 +52,9 @@ class Board {
     for(let y = this.height, x; y--; ){
       for( x = this.width; x--; ){
         //if current block is not empty and the one below it is, move it down
-        if( y < this.height-1 && this.state[y][x] > 0 && this.state[y+1][x] == 0 ){
-            this.state[y+1][x] = this.state[y][x]
-            this.state[y][x] = 0
+        if( y < this.height-1 && this.map[y][x] > 0 && this.map[y+1][x] == 0 ){
+            this.map[y+1][x] = this.map[y][x]
+            this.map[y][x] = 0
             changes = true;
         }
       }
@@ -72,8 +74,8 @@ class Board {
     for(let y = this.height, x, block_group; y--; ){
       for( x = this.width; x--; ){
         //if current block is not empty and the one below it is, move it down
-        if( this.state[y][x] > 0 ){
-          block_group = this.CheckSurroundingCells(this.state[y][x],[x+","+y],[]);
+        if( this.map[y][x] > 0 ){
+          block_group = this.CheckSurroundingCells(this.map[y][x],[x+","+y],[]);
 
           console.log(block_group)
 
@@ -83,7 +85,7 @@ class Board {
               pos = block_group[i].split(",")
               x = parseInt(pos[0])
               y = parseInt(pos[1])
-              this.state[y][x] = 0;
+              this.map[y][x] = 0;
             }
           }
         }
@@ -91,6 +93,7 @@ class Board {
     }
     if( changes )
       this.EmitUpdate();
+    return changes
   }
 
   //recursive function checks surrounding cells and adds any of the same color to an array
@@ -106,28 +109,28 @@ class Board {
       if( x < this.width-1
         && !checked_cells.includes( (x+1)+","+y )
         && !cellsToCheck.includes( (x+1)+","+y )
-        && this.state[y][x+1] == color ){
+        && this.map[y][x+1] == color ){
           cellsToCheck.push( (x+1)+","+y )
       }
 
       if( x > 0
         && !checked_cells.includes( (x-1)+","+y )
         && !cellsToCheck.includes( (x-1)+","+y )
-        && this.state[y][x-1] == color ){
+        && this.map[y][x-1] == color ){
           cellsToCheck.push( (x-1)+","+y )
       }
 
       if( y < this.height-1
         && !checked_cells.includes( x+","+(y+1) )
         && !cellsToCheck.includes( x+","+(y+1) )
-        && this.state[y+1][x] == color ){
+        && this.map[y+1][x] == color ){
           cellsToCheck.push( x+","+(y+1) )
       }
 
       if( y > 0
         && !checked_cells.includes( x+","+(y-1) )
         && !cellsToCheck.includes( x+","+(y-1) )
-        && this.state[y-1][x] == color ){
+        && this.map[y-1][x] == color ){
           cellsToCheck.push( x+","+(y-1) )
       }
 
@@ -142,10 +145,10 @@ class Board {
     }
   }
 
-  SetBoardState(state){
-    for( let y = 0, h = Math.min(this.height,state.length), x, w; y < h; y++ ){
-      for( x = 0, w = Math.min(this.width,state[y].length); x < w; x++ ){
-        this.state[y][x] = state[y][x];
+  SetBoardMap(map){
+    for( let y = 0, h = Math.min(this.height,map.length), x, w; y < h; y++ ){
+      for( x = 0, w = Math.min(this.width,map[y].length); x < w; x++ ){
+        this.map[y][x] = map[y][x];
       }
     }
     this.EmitUpdate()
@@ -171,6 +174,6 @@ let test = "\
 001100,\
 "
 
-board.SetBoardState(test.split(","))
+board.SetBoardMap(test.split(","))
 board.SettleBoard()
 board.DestroyGroups()
