@@ -34,12 +34,14 @@ class Board {
     this.state[y][x] = color;
   }
 
-  PlaceShape(blocks){
-    for( let l = blocks.length, x, y, color; --l; ){
-      x = blocks[l][0];
-      y = blocks[l][1];
+  PlaceShape(x, y, blocks){
+    console.log(blocks)
+    for( let l = blocks.length, color; --l; ){
+      let xx = blocks[l][0] + x;
+      let yy = blocks[l][1] + y;
+      console.log(xx,yy)
       color = blocks[l][2];
-      this.PlaceBlock(x,y,color);
+      this.PlaceBlock(xx,yy,color);
     }
     this.SettleBoard()
     this.EmitUpdate()
@@ -99,11 +101,11 @@ class Board {
 
 }
 
-let board = new Board(10,20,function(board){
-  console.log(board.PrintAsString());
-});
+// let board = new Board(10,20,function(board){
+//   console.log(board.PrintAsString());
+// });
 
-for( let i = 0; i < 4; i++){
-  board.PlaceBasicShape(4,4,i,4,i+1);
-}
-board.SettleBoard()
+// for( let i = 0; i < 4; i++){
+//   board.PlaceBasicShape(4,4,i,4,i+1);
+// }
+// board.SettleBoard()
