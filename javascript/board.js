@@ -58,7 +58,9 @@ class Board {
       }
     }
 
-    this.EmitUpdate();
+    if(changes){
+      this.EmitUpdate();
+    }
     //if(changes)
       //this.SettleBoard();
     return changes;
@@ -66,6 +68,7 @@ class Board {
 
   DestroyGroups(){
     //interate up the board
+    let changes = false;
     for(let y = this.height, x, block_group; y--; ){
       for( x = this.width; x--; ){
         //if current block is not empty and the one below it is, move it down
@@ -75,6 +78,7 @@ class Board {
           console.log(block_group)
 
           if(block_group.length >= this.match){
+            changes = true;
             for( let i = 0, l = block_group.length, pos, x, y; i < l; i++ ){
               pos = block_group[i].split(",")
               x = parseInt(pos[0])
@@ -85,9 +89,8 @@ class Board {
         }
       }
     }
-
-    this.EmitUpdate()
-    this.SettleBoard()
+    if( changes )
+      this.EmitUpdate();
   }
 
   //recursive function checks surrounding cells and adds any of the same color to an array
