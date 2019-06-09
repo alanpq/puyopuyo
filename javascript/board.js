@@ -34,7 +34,7 @@ class Board {
   }
 
   PlaceShape(x,y,blocks){
-    for( let l = blocks.length, x, y, color; --l; ){
+    for( let l = blocks.length, block_x, block_y, color; --l; ){
       block_x = blocks[l][0];
       block_y = blocks[l][1];
       color = blocks[l][2];
