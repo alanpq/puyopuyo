@@ -119,6 +119,20 @@ class Board {
     return false
   }
 
+  TestRotationOffsetArray(x,y,cells,offsetArray){
+    for( let i = 0, l = offsetArray.length, offset_x, offset_y; i < l; i++ ){
+      offset_x = offsetArray[i][0]
+      offset_y = offsetArray[i][1]
+
+      if( TestIfBlockCollides(x+offset_x,y+offset_y,cells) == false ){
+        return [offset_x,offset_y];
+      }
+    }
+    return false
+  }
+
+
+
   SettleBoard(){
     let changes = false;
     //interate up the board

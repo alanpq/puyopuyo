@@ -81,8 +81,31 @@ const activeBlock = {
   x:0,
   y:0,
   rot:0,
-  positions: blocks.basic([1,2], 0)
+  colors:[1,2],
+  positions: null,
+  RotateBy: (rot) => {
+    let newRot = this.rot + rot;
+    if( newRot < 0 ) newRot = 3;
+    else if( newRot > 3 ) newRot = 0;
+
+    //get rotation tests for current rotations
+    let tests = rotTests.basic(newRot)
+
+    //test if rotation possible
+    let result = testBoard.TestRotationOffsetArray(this.x,this.y,this.positions,tests)
+
+    if(result){
+      this.x += result[0]
+      this.y += result[1]
+      this.rot = newRot
+      this.positions = blocks.basic(this.colors,this.rot)
+    }
+    else {
+      this.RotateBy(rot*2)
+    }
+  }
 }
+activeBlock.positions = blocks.basic(activeBlock.colors, 0)
 
 var prev
 const draw = (dt) => {
@@ -177,20 +200,9 @@ const tick = (now) => {
       let oldRot = activeBlock.rot;
       // ACTIVE BLOCK ROTATION
       if(getKeyDown(81)) {
-        activeBlock.rot = (activeBlock.rot + 1) % 4
-
-        //test if rotation possible
-
-        activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
+        activeBlock.RotateBy(1)
       } else if (getKeyDown(69)) {
-        activeBlock.rot = (activeBlock.rot - 1) % 4
-        if (activeBlock.rot < 0) {
-          activeBlock.rot += 4
-        }
-
-        //test if rotation possible
-        
-        activeBlock.positions = blocks.basic([1,2], activeBlock.rot)
+        activeBlock.RotateBy(-1)
       }
 
       // MISC KEYS
