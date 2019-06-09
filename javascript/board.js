@@ -111,8 +111,8 @@ class Board {
       if( x+block_x < 0 || x+block_x > this.width-1 || block_y+y < 0 || block_y+y > this.height-1 ){
         return true
       }
-
-      if( this.state[y+block_y][x+block_x] > 0){
+      console.log(y+block_y,x+block_x)
+      if( this.map[y+block_y][x+block_x] > 0){
         return true
       }
     }
@@ -124,7 +124,7 @@ class Board {
       offset_x = offsetArray[i][0]
       offset_y = offsetArray[i][1]
 
-      if( TestIfBlockCollides(x+offset_x,y+offset_y,cells) == false ){
+      if( this.TestIfBlockCollides(x+offset_x,y+offset_y,cells) == false ){
         return [offset_x,offset_y];
       }
     }

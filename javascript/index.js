@@ -83,13 +83,16 @@ const activeBlock = {
   rot:0,
   colors:[1,2],
   positions: null,
-  RotateBy: (rot) => {
+  RotateBy: function(rot){
+    console.log(this)
     let newRot = this.rot + rot;
     if( newRot < 0 ) newRot = 3;
     else if( newRot > 3 ) newRot = 0;
 
     //get rotation tests for current rotations
     let tests = rotTests.basic(newRot)
+
+    console.log(newRot,tests);
 
     //test if rotation possible
     let result = testBoard.TestRotationOffsetArray(this.x,this.y,this.positions,tests)
