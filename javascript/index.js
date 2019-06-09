@@ -89,10 +89,12 @@ const activeBlock = {
     if( newRot < 0 ) newRot = 3;
     else if( newRot > 3 ) newRot = 0;
 
+    console.log("newRot:", newRot)
+
     //get rotation tests for current rotations
     let tests = rotTests.basic(newRot)
 
-    console.log(newRot,tests);
+    console.log("tests:", tests)
 
     //test if rotation possible
     let result = testBoard.TestRotationOffsetArray(this.x,this.y,this.positions,tests)
@@ -109,6 +111,7 @@ const activeBlock = {
   }
 }
 activeBlock.positions = blocks.basic(activeBlock.colors, 0)
+console.log("Post-assignment:", blocks.basic(activeBlock.colors, 0))
 
 var prev
 const draw = (dt) => {

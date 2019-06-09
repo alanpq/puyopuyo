@@ -15,11 +15,11 @@ const blocks = {
         return [ [x, y, color], [...], ... ]
 */
   basic: (colors, rot) => {
-    /* Rotation defines a step counter-clockwise from the bottom of the basic block
+    /* Rotation defines a step clockwise from the bottom of the basic block;
       rotation numbers demonstrated below, X as origin:
-            [2]
-         [1][X][3]
             [0]
+         [1][X][3]
+            [2]
       For odd rotations, (1 - 2) will provide the x offset -1, and (3 - 2) will provide the x offset 1
       For even rotations, (0 - 1) will provide the y offset -1, and (2 - 1) will provide the y offset 1
     */

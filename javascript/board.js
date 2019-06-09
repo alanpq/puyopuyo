@@ -109,10 +109,11 @@ class Board {
     for( let l = cells.length, block_x, block_y; --l; ){
       block_x = cells[l][0]
       block_y = cells[l][1]
+
       if( x+block_x < 0 || x+block_x > this.width-1 || block_y+y < 0 || block_y+y > this.height-1 ){
         return true
       }
-      console.log(y+block_y,x+block_x)
+      // console.log(y+block_y,x+block_x)
       if( this.map[y+block_y][x+block_x] > 0){
         return true
       }
