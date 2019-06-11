@@ -45,3 +45,5 @@ const rotTests = {
     return tests[newRot];         // Returned to the board
   } 
 }
+
+const mod = (x, n) => (x % n + n) % n;
