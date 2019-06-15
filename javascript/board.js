@@ -106,19 +106,21 @@ class Board {
   }
 
   TestIfBlockCollides(x,y,cells){
-    for( let l = cells.length, block_x, block_y; --l; ){
+    let colliding = false;
+    //console.log(cells)
+    for( let l = cells.length, block_x, block_y; l--; ){
       block_x = cells[l][0]
       block_y = cells[l][1]
 
       if( x+block_x < 0 || x+block_x > this.width-1 || block_y+y < 0 || block_y+y > this.height-1 ){
-        return true
+        colliding = true
+      } else if( this.map[y+block_y][x+block_x] > 0){
+        colliding = true
       }
-      // console.log(y+block_y,x+block_x)
-      if( this.map[y+block_y][x+block_x] > 0){
-        return true
-      }
+      //console.log(y+block_y,x+block_x)
+
     }
-    return false
+    return colliding
   }
 
   TestRotationOffsetArray(x,y,cells,offsetArray){
@@ -176,7 +178,7 @@ class Board {
           if(block_group.length >= this.match){
             if(!changes){
               changes = true;
-              this.current_chain.IncrementChainPower();
+              this.current_chain.IncrementChain();
             }
 
             this.current_chain.AddColor(this.map[y][x]);
@@ -274,12 +276,12 @@ for( let i = 0; i < 4; i++){
 }
 
 let test = "\
-000000,\
-333300,\
-004040,\
-040100,\
-002100,\
-001100,\
+000000000,\
+333300000,\
+004040000,\
+040100000,\
+002100202,\
+001100101,\
 "
 
 board.SetBoardMap(test.split(","))

@@ -89,6 +89,8 @@ const activeBlock = {
     if( newRot < 0 ) newRot = 3;
     else if( newRot > 3 ) newRot = 0;
 
+    let newPositions = blocks.basic(this.colors,newRot);
+
     console.log("newRot:", newRot)
 
     //get rotation tests for current rotations
@@ -97,7 +99,7 @@ const activeBlock = {
     console.log("tests:", tests)
 
     //test if rotation possible
-    let result = testBoard.TestRotationOffsetArray(this.x,this.y,this.positions,tests)
+    let result = testBoard.TestRotationOffsetArray(this.x,this.y,newPositions,tests)
 
     console.log("result:", result);
 
@@ -105,11 +107,13 @@ const activeBlock = {
       this.x += result[0]
       this.y += result[1]
       this.rot = newRot
-      this.positions = blocks.basic(this.colors,this.rot)
+      this.positions = newPositions
+      console.log(this);
     }
-    else { // flip
-      this.rot = mod((rot*2 - this.rot)*-1, 4);
-      this.positions = blocks.basic(this.colors,this.rot)
+    else if(Math.abs(rot) < 2){ // flip
+      this.RotateBy(rot*2)
+      //this.rot = mod((rot*2 - this.rot)*-1, 4);
+      //this.positions = blocks.basic(this.colors,this.rot)
     }
   }
 }
@@ -186,15 +190,17 @@ const tick = (now) => {
       discreteTimer2 += dt;
       if (discreteTimer > realBlockFallingDelay) {
         discreteTimer = 0;
-        activeBlock.y += 1
+        if( !testBoard.TestIfBlockCollides(activeBlock.x,activeBlock.y+1,activeBlock.positions) ){
+          activeBlock.y += 1
+        }
       }
 
       // ACTIVE BLOCK MOVEMENT
       if(discreteTimer2 > blockMovementDelay) {
         discreteTimer2 = 0;
-        if (getKeyHeld(65)) {
+        if (getKeyHeld(65) && !testBoard.TestIfBlockCollides(activeBlock.x-1,activeBlock.y,activeBlock.positions)) {
           activeBlock.x -= 1
-        } else if (getKeyHeld(68)) {
+        } else if (getKeyHeld(68) && !testBoard.TestIfBlockCollides(activeBlock.x+1,activeBlock.y,activeBlock.positions)) {
           activeBlock.x += 1
         }
       }
@@ -206,7 +212,6 @@ const tick = (now) => {
       //else if (getKeyDown(87)) {
       //   activeBlock.y -= 1
       // }
-      let oldRot = activeBlock.rot;
       // ACTIVE BLOCK ROTATION
       if(getKeyDown(81)) {
         activeBlock.RotateBy(1)
@@ -226,7 +231,7 @@ const tick = (now) => {
       }
 
       // COLLISION DETECTION
-      for(let i = 0; i < activeBlock.positions.length; i++) {
+      /*for(let i = 0; i < activeBlock.positions.length; i++) {
         let block = activeBlock.positions[i]
         let x = activeBlock.x + block[0]
         let y = activeBlock.y + block[1]
@@ -234,7 +239,7 @@ const tick = (now) => {
         if(x<0)                 activeBlock.x += 1;
         if(x>=testBoard.width)  activeBlock.x -= 1;
         if(y>=testBoard.height) activeBlock.y -= 1;
-      }
+      }*/
     break;
     default:
 
@@ -253,7 +258,18 @@ const tick = (now) => {
 var testBoard = new Board(10,20,function(board){
 
 });
-testBoard.PlaceBlock(2,10,blocks.basic([2,3], activeBlock.rot));
+//testBoard.PlaceBlock(2,10,blocks.basic([2,3], activeBlock.rot));
+let test = "\
+000000000,\
+333300000,\
+004040000,\
+040100000,\
+002100202,\
+001100101,\
+"
+
+testBoard.SetBoardMap(test.split(","))
+
 
 // for( let i = 0; i < 4; i++){
 //   testBoard.PlaceBasicShape(4,4,i,4,i+1);
